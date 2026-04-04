@@ -28,12 +28,25 @@ const App = (() => {
 
     // PDF 저장 버튼
     document.getElementById('btnPdf')?.addEventListener('click', () => {
+      const errors = Form.validate();
+      if (errors.length > 0) { alert(errors.join('\n')); return; }
       const formData = Form.collect();
+      const result = Calculator.calculate(formData);
+      const previewContent = document.getElementById('previewContent');
+      if (previewContent) previewContent.innerHTML = Preview.render(formData, result);
       PdfExport.download(formData.customerName, formData.quoteDate);
     });
 
     // 인쇄 버튼
-    document.getElementById('btnPrint')?.addEventListener('click', () => window.print());
+    document.getElementById('btnPrint')?.addEventListener('click', () => {
+      const errors = Form.validate();
+      if (errors.length > 0) { alert(errors.join('\n')); return; }
+      const formData = Form.collect();
+      const result = Calculator.calculate(formData);
+      const previewContent = document.getElementById('previewContent');
+      if (previewContent) previewContent.innerHTML = Preview.render(formData, result);
+      window.print();
+    });
   }
 
   /** 미리보기 HTML 업데이트 (실시간 금액 반영) */
