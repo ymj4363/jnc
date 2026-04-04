@@ -657,6 +657,13 @@ body {
 
 /* ── 인쇄 ────────────────────────────────────────────────── */
 @media print {
+  /* 배경색·색상 강제 출력 (브라우저 기본 제거 방지) */
+  * {
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+    color-adjust: exact !important;
+  }
+
   body { background: #fff; }
   .app-container { display: block; padding: 0; }
   .form-panel, .summary-panel { display: none; }
