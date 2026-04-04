@@ -426,7 +426,7 @@
       <h3>견적서 미리보기</h3>
       <div class="modal-toolbar-btns">
         <button class="btn btn-success" id="btnPdfModal" type="button"
-                onclick="(() => { const fd = Form.collect(); PdfExport.download(fd.customerName, fd.quoteDate); })()">
+                onclick="(() => { const fd = Form.collect(); PdfExport.download(fd.customerName, fd.quoteDate, fd.quoteNo); })()">
           📄 PDF 저장
         </button>
         <button class="btn btn-secondary" id="btnCloseModal" type="button">✕ 닫기</button>

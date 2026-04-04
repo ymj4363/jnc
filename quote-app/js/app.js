@@ -34,7 +34,7 @@ const App = (() => {
       const result = Calculator.calculate(formData);
       const previewContent = document.getElementById('previewContent');
       if (previewContent) previewContent.innerHTML = Preview.render(formData, result);
-      PdfExport.download(formData.customerName, formData.quoteDate);
+      PdfExport.download(formData.customerName, formData.quoteDate, formData.quoteNo);
     });
 
     // 인쇄 버튼

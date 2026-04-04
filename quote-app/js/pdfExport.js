@@ -10,7 +10,7 @@ const PdfExport = (() => {
    * @param {string} customerName - 파일명에 사용할 고객사명
    * @param {string} dateStr      - 날짜 문자열 (YYYY-MM-DD)
    */
-  function download(customerName, dateStr) {
+  function download(customerName, dateStr, quoteNo) {
     const element = document.getElementById('quoteDocument');
     if (!element) {
       alert('미리보기를 먼저 생성해주세요.');
@@ -18,8 +18,8 @@ const PdfExport = (() => {
     }
 
     const safeName = (customerName || '고객사').replace(/[\\/:*?"<>|]/g, '_');
-    const safeDate = (dateStr || '').replace(/-/g, '');
-    const filename = `견적서-${safeName}-${safeDate}.pdf`;
+    const safeQuoteNo = (quoteNo || '').replace(/[\\/:*?"<>|]/g, '_');
+    const filename = `견적서-${safeName}-${safeQuoteNo}.pdf`;
 
     const opt = {
       margin:       [10, 10, 10, 10],  // mm (상, 우, 하, 좌)
