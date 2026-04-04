@@ -1,0 +1,449 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>측정서비스 견적서 작성</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<div class="app-container">
+
+  <!-- ═══ 좌측: 입력 폼 ═══════════════════════════════════════ -->
+  <div class="form-panel">
+    <form id="quoteForm" autocomplete="off">
+
+      <!-- ── 견적 기본 정보 ─────────────────────────── -->
+      <div class="card">
+        <div class="card-header">📋 견적 기본 정보</div>
+        <div class="card-body">
+          <div class="form-row">
+            <label for="quoteDate">작성일</label>
+            <input type="date" id="quoteDate" name="quoteDate" required>
+          </div>
+          <div class="form-row">
+            <label for="quoteNo">견적 번호</label>
+            <input type="text" id="quoteNoPrefix" readonly
+                   style="background:#f0f2f5; color:#555; width:90px; flex:none; text-align:center; cursor:default;"
+                   title="날짜에서 자동 생성">
+            <span style="font-size:14px; color:#999; flex:none;">-</span>
+            <input type="number" id="quoteNoSeq" name="quoteNoSeq"
+                   value="1" min="1" max="999" step="1"
+                   style="width:60px; flex:none; text-align:center;"
+                   title="일련번호 (같은 날 여러 건 시 변경)">
+            <span class="field-hint">일련번호 변경 가능</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── 고객 정보 ──────────────────────────────── -->
+      <div class="card">
+        <div class="card-header">🏢 고객 정보</div>
+        <div class="card-body">
+          <div class="form-row">
+            <label for="customerName">고객사 <span class="required">*</span></label>
+            <input type="text" id="customerName" name="customerName"
+                   placeholder="고객사명 입력" required>
+          </div>
+          <div class="form-row">
+            <label for="customerContact">담당자 <span class="required">*</span></label>
+            <input type="text" id="customerContact" name="customerContact"
+                   placeholder="담당자 이름" required>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── BTDF (투과 측정) ───────────────────────── -->
+      <div class="card measurement-card">
+        <div class="card-body">
+
+          <!-- 측정 유형 선택 헤더 -->
+          <div class="measurement-header">
+            <input type="checkbox" id="btdf-enabled" name="btdf-enabled" checked>
+            <label for="btdf-enabled">BSDF (BTDF) — 투과 측정</label>
+            <div class="qty-group">
+              <span class="qty-label">샘플 수 / 측정 횟수</span>
+              <input type="number" id="btdf-qty" value="1" min="1" max="999" step="1" class="qty-input">
+              <span class="qty-unit">개</span>
+            </div>
+            <span class="base-price-badge">기본 1,800,000원</span>
+          </div>
+
+          <div id="btdf-section">
+
+            <!-- ▶ 기본 조건 안내 (읽기 전용 영역) -->
+            <div class="info-block">
+              <div class="info-block-title">📌 기본 측정 조건</div>
+              <div class="info-grid">
+                <div class="info-item">
+                  <span class="info-label">샘플 사이즈</span>
+                  <span class="info-value">30 mm ~ 200 mm</span>
+                </div>
+                <div class="info-item">
+                  <span class="info-label">입사각 (기본)</span>
+                  <span class="info-value">3개 기본 포함 · 각도 직접 설정</span>
+                </div>
+                <div class="info-item">
+                  <span class="info-label">측정각 theta</span>
+                  <span class="info-value">-80° ~ 80°, 기본 간격 10°</span>
+                </div>
+                <div class="info-item">
+                  <span class="info-label">측정각 phi (기본)</span>
+                  <span class="info-value">2개 기본 포함 · 각도 직접 설정</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- ▶ 입력 영역 -->
+            <div class="input-block">
+
+              <!-- 입사각 설정 -->
+              <div class="sub-section">
+                <div class="sub-section-header">
+                  <span class="sub-title">입사각 (Incident Angle)</span>
+                  <span class="sub-base-info included">기본 3개 포함 (기본가 포함)</span>
+                </div>
+                <!-- 기본 입사각 3개 - 각도 선택 가능 -->
+                <div class="base-inputs-group">
+                  <div class="base-input-row">
+                    <span class="base-row-label">기본 1</span>
+                    <input type="number" class="btdf-base-angle base-angle-input"
+                           value="0" min="-85" max="85" step="1">
+                    <span class="unit-label">°</span>
+                  </div>
+                  <div class="base-input-row">
+                    <span class="base-row-label">기본 2</span>
+                    <input type="number" class="btdf-base-angle base-angle-input"
+                           value="30" min="-85" max="85" step="1">
+                    <span class="unit-label">°</span>
+                  </div>
+                  <div class="base-input-row">
+                    <span class="base-row-label">기본 3</span>
+                    <input type="number" class="btdf-base-angle base-angle-input"
+                           value="60" min="-85" max="85" step="1">
+                    <span class="unit-label">°</span>
+                  </div>
+                </div>
+                <!-- 추가 입사각 (각 +600,000원) -->
+                <div id="btdf-angles-container"></div>
+                <button type="button" class="btn btn-add" id="btdf-add-angle">
+                  + 입사각 추가
+                  <span class="add-price-hint">+600,000원 / 개</span>
+                </button>
+              </div>
+
+              <!-- 측정각 phi 설정 -->
+              <div class="sub-section">
+                <div class="sub-section-header">
+                  <span class="sub-title">측정각 phi / Azimuth</span>
+                  <span class="sub-base-info included">기본 2개 포함 (기본가 포함)</span>
+                </div>
+                <!-- 기본 azimuth 2개 - 각도 선택 가능 -->
+                <div class="base-inputs-group">
+                  <div class="base-input-row">
+                    <span class="base-row-label">기본 1</span>
+                    <input type="number" class="btdf-base-azimuth base-azimuth-input"
+                           value="0" min="0" max="360" step="1">
+                    <span class="unit-label">°</span>
+                  </div>
+                  <div class="base-input-row">
+                    <span class="base-row-label">기본 2</span>
+                    <input type="number" class="btdf-base-azimuth base-azimuth-input"
+                           value="90" min="0" max="360" step="1">
+                    <span class="unit-label">°</span>
+                  </div>
+                </div>
+                <!-- 추가 azimuth (각 +600,000원) -->
+                <div id="btdf-azimuth-container"></div>
+                <button type="button" class="btn btn-add" id="btdf-add-azimuth">
+                  + phi(Azimuth) 추가
+                  <span class="add-price-hint">+600,000원 / 개</span>
+                </button>
+              </div>
+
+              <!-- 측정각 theta 간격 -->
+              <div class="sub-section">
+                <div class="sub-section-header">
+                  <span class="sub-title">측정각 theta 간격 설정</span>
+                  <span class="sub-base-info">-80° ~ 80°, 기본 10° / 최소 0.1°</span>
+                </div>
+                <div class="theta-row">
+                  <label>측정 간격</label>
+                  <input type="number" id="btdf-theta-step" value="10"
+                         min="0.1" max="80" step="0.1" style="width:80px;">
+                  <span class="unit-label">° 간격</span>
+                </div>
+              </div>
+
+              <!-- 광원 선택 -->
+              <div class="sub-section">
+                <div class="sub-section-header">
+                  <span class="sub-title">광원 (Light Source)</span>
+                  <span class="sub-base-info">할로겐 또는 레이저 선택</span>
+                </div>
+                <div class="radio-group">
+                  <label class="radio-label">
+                    <input type="radio" name="btdf-lightSource" value="halogen" checked>
+                    <span>할로겐 (Halogen)</span>
+                  </label>
+                  <label class="radio-label">
+                    <input type="radio" name="btdf-lightSource" value="laser"
+                           onchange="Form.handleWavelengthChange(this,'btdf')">
+                    <span>레이저 (Laser)</span>
+                  </label>
+                </div>
+                <div id="btdf-laser-options" class="laser-options" style="display:none;">
+                  <label>파장대 선택</label>
+                  <select id="btdf-wavelength" onchange="App.updatePreview()">
+                    <option value="">-- 선택 --</option>
+                    <option value="405">405 nm</option>
+                    <option value="530">530 nm</option>
+                    <option value="645">645 nm</option>
+                  </select>
+                </div>
+              </div>
+
+            </div><!-- /input-block -->
+          </div><!-- /btdf-section -->
+        </div>
+      </div>
+
+      <!-- ── BRDF (반사 측정) ───────────────────────── -->
+      <div class="card measurement-card">
+        <div class="card-body">
+
+          <div class="measurement-header">
+            <input type="checkbox" id="brdf-enabled" name="brdf-enabled">
+            <label for="brdf-enabled">BSDF (BRDF) — 반사 측정</label>
+            <div class="qty-group">
+              <span class="qty-label">샘플 수 / 측정 횟수</span>
+              <input type="number" id="brdf-qty" value="1" min="1" max="999" step="1" class="qty-input">
+              <span class="qty-unit">개</span>
+            </div>
+            <span class="base-price-badge">기본 1,800,000원</span>
+          </div>
+
+          <div id="brdf-section" style="display:none;">
+
+            <!-- ▶ 기본 조건 안내 -->
+            <div class="info-block">
+              <div class="info-block-title">📌 기본 측정 조건</div>
+              <div class="info-grid">
+                <div class="info-item">
+                  <span class="info-label">샘플 사이즈</span>
+                  <span class="info-value">30 mm ~ 200 mm</span>
+                </div>
+                <div class="info-item">
+                  <span class="info-label">입사각 (기본)</span>
+                  <span class="info-value">3개 기본 포함 · 각도 직접 설정</span>
+                </div>
+                <div class="info-item">
+                  <span class="info-label">측정각 theta</span>
+                  <span class="info-value">-80° ~ 80°, 기본 간격 10°</span>
+                </div>
+                <div class="info-item">
+                  <span class="info-label">측정각 phi (기본)</span>
+                  <span class="info-value">2개 기본 포함 · 각도 직접 설정</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- ▶ 입력 영역 -->
+            <div class="input-block">
+
+              <div class="sub-section">
+                <div class="sub-section-header">
+                  <span class="sub-title">입사각 (Incident Angle)</span>
+                  <span class="sub-base-info included">기본 3개 포함 (기본가 포함)</span>
+                </div>
+                <div class="base-inputs-group">
+                  <div class="base-input-row">
+                    <span class="base-row-label">기본 1</span>
+                    <input type="number" class="brdf-base-angle base-angle-input"
+                           value="0" min="-85" max="85" step="1">
+                    <span class="unit-label">°</span>
+                  </div>
+                  <div class="base-input-row">
+                    <span class="base-row-label">기본 2</span>
+                    <input type="number" class="brdf-base-angle base-angle-input"
+                           value="30" min="-85" max="85" step="1">
+                    <span class="unit-label">°</span>
+                  </div>
+                  <div class="base-input-row">
+                    <span class="base-row-label">기본 3</span>
+                    <input type="number" class="brdf-base-angle base-angle-input"
+                           value="60" min="-85" max="85" step="1">
+                    <span class="unit-label">°</span>
+                  </div>
+                </div>
+                <div id="brdf-angles-container"></div>
+                <button type="button" class="btn btn-add" id="brdf-add-angle">
+                  + 입사각 추가
+                  <span class="add-price-hint">+600,000원 / 개</span>
+                </button>
+              </div>
+
+              <div class="sub-section">
+                <div class="sub-section-header">
+                  <span class="sub-title">측정각 phi / Azimuth</span>
+                  <span class="sub-base-info included">기본 2개 포함 (기본가 포함)</span>
+                </div>
+                <div class="base-inputs-group">
+                  <div class="base-input-row">
+                    <span class="base-row-label">기본 1</span>
+                    <input type="number" class="brdf-base-azimuth base-azimuth-input"
+                           value="0" min="0" max="360" step="1">
+                    <span class="unit-label">°</span>
+                  </div>
+                  <div class="base-input-row">
+                    <span class="base-row-label">기본 2</span>
+                    <input type="number" class="brdf-base-azimuth base-azimuth-input"
+                           value="90" min="0" max="360" step="1">
+                    <span class="unit-label">°</span>
+                  </div>
+                </div>
+                <div id="brdf-azimuth-container"></div>
+                <button type="button" class="btn btn-add" id="brdf-add-azimuth">
+                  + phi(Azimuth) 추가
+                  <span class="add-price-hint">+600,000원 / 개</span>
+                </button>
+              </div>
+
+              <div class="sub-section">
+                <div class="sub-section-header">
+                  <span class="sub-title">측정각 theta 간격 설정</span>
+                  <span class="sub-base-info">-80° ~ 80°, 기본 10° / 최소 0.1°</span>
+                </div>
+                <div class="theta-row">
+                  <label>측정 간격</label>
+                  <input type="number" id="brdf-theta-step" value="10"
+                         min="0.1" max="80" step="0.1" style="width:80px;">
+                  <span class="unit-label">° 간격</span>
+                </div>
+              </div>
+
+              <div class="sub-section">
+                <div class="sub-section-header">
+                  <span class="sub-title">광원 (Light Source)</span>
+                  <span class="sub-base-info">할로겐 또는 레이저 선택</span>
+                </div>
+                <div class="radio-group">
+                  <label class="radio-label">
+                    <input type="radio" name="brdf-lightSource" value="halogen" checked>
+                    <span>할로겐 (Halogen)</span>
+                  </label>
+                  <label class="radio-label">
+                    <input type="radio" name="brdf-lightSource" value="laser"
+                           onchange="Form.handleWavelengthChange(this,'brdf')">
+                    <span>레이저 (Laser)</span>
+                  </label>
+                </div>
+                <div id="brdf-laser-options" class="laser-options" style="display:none;">
+                  <label>파장대 선택</label>
+                  <select id="brdf-wavelength" onchange="App.updatePreview()">
+                    <option value="">-- 선택 --</option>
+                    <option value="405">405 nm</option>
+                    <option value="530">530 nm</option>
+                    <option value="645">645 nm</option>
+                  </select>
+                </div>
+              </div>
+
+            </div><!-- /input-block -->
+          </div><!-- /brdf-section -->
+        </div>
+      </div>
+
+      <!-- ── 할인 / 부가세 / 비고 ───────────────────── -->
+      <div class="card">
+        <div class="card-header">💰 할인 / 부가세 / 비고</div>
+        <div class="card-body">
+          <div class="form-row">
+            <label for="discountRate">할인율 (%)</label>
+            <input type="number" id="discountRate" name="discountRate"
+                   value="0" min="0" max="100" step="5" style="max-width:80px;">
+            <input type="text" id="discountLabel" name="discountLabel"
+                   placeholder="할인 사유 (예: Project Special Discount)" style="flex:1;">
+          </div>
+          <div class="form-row">
+            <label>부가세</label>
+            <div class="radio-group">
+              <label class="radio-label">
+                <input type="radio" name="vatOption" value="exclusive" checked onchange="App.updatePreview()">
+                <span>부가세 별도 <em style="font-size:11px;color:#888;">(기본)</em></span>
+              </label>
+              <label class="radio-label">
+                <input type="radio" name="vatOption" value="inclusive" onchange="App.updatePreview()">
+                <span>부가세 포함 <em style="font-size:11px;color:#888;">(VAT 10%)</em></span>
+              </label>
+            </div>
+          </div>
+          <div class="form-row">
+            <label for="remarks">비고</label>
+            <textarea id="remarks" name="remarks" placeholder="특이사항 입력"></textarea>
+          </div>
+        </div>
+      </div>
+
+    </form>
+  </div>
+
+  <!-- ═══ 우측: 금액 요약 + 액션 ═══════════════════════════ -->
+  <div class="summary-panel">
+
+    <div class="card">
+      <div class="card-header">💵 견적 금액 요약</div>
+      <div class="card-body">
+        <div id="priceSummary"></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-header">⚙️ 작업</div>
+      <div class="card-body">
+        <div class="action-buttons">
+          <button class="btn btn-primary" id="btnPreview" type="button">
+            🔍 미리보기 / 검수
+          </button>
+          <button class="btn btn-success" id="btnPdf" type="button">
+            📄 PDF 저장
+          </button>
+          <button class="btn btn-secondary" id="btnPrint" type="button">
+            🖨️ 인쇄
+          </button>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ═══ 미리보기 모달 ═══════════════════════════════════════ -->
+<div id="previewModal">
+  <div class="modal-inner">
+    <div class="modal-toolbar">
+      <h3>견적서 미리보기</h3>
+      <div class="modal-toolbar-btns">
+        <button class="btn btn-success" id="btnPdfModal" type="button"
+                onclick="(() => { const fd = Form.collect(); PdfExport.download(fd.customerName, fd.quoteDate); })()">
+          📄 PDF 저장
+        </button>
+        <button class="btn btn-secondary" id="btnCloseModal" type="button">✕ 닫기</button>
+      </div>
+    </div>
+    <div class="modal-body" id="previewContent"></div>
+  </div>
+</div>
+
+<!-- ═══ 스크립트 로드 (순서 중요) ════════════════════════════ -->
+<script src="js/config.js"></script>
+<script src="js/calculator.js"></script>
+<script src="js/preview.js"></script>
+<script src="assets/html2pdf.bundle.min.js"></script>
+<script src="js/pdfExport.js"></script>
+<script src="js/form.js"></script>
+<script src="js/app.js"></script>
+
+</body>
+</html>

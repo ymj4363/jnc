@@ -1,0 +1,671 @@
+/* ═══════════════════════════════════════════════════════════
+   style.css  |  측정서비스 견적서 웹앱
+   ═══════════════════════════════════════════════════════════ */
+
+/* ── 리셋 & 기본 ─────────────────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: 'Malgun Gothic', '맑은 고딕', 'Nanum Gothic', sans-serif;
+  font-size: 14px;
+  background: #eef0f4;
+  color: #2c2c2c;
+}
+
+/* ── 전체 레이아웃 ───────────────────────────────────────── */
+.app-container {
+  display: flex;
+  gap: 20px;
+  max-width: 1380px;
+  margin: 0 auto;
+  padding: 24px 20px;
+  align-items: flex-start;
+}
+
+.form-panel   { flex: 1; min-width: 0; }
+.summary-panel { width: 250px; flex-shrink: 0; position: sticky; top: 24px; }
+
+/* ── 카드 공통 ───────────────────────────────────────────── */
+.card {
+  background: #fff;
+  border-radius: 10px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+  margin-bottom: 16px;
+  overflow: hidden;
+  border: 1px solid #e2e5ea;
+}
+
+.card-header {
+  background: #1a3a5c;
+  color: #fff;
+  padding: 10px 16px;
+  font-weight: 700;
+  font-size: 13px;
+  letter-spacing: 0.4px;
+}
+
+.card-body { padding: 16px; }
+
+/* 측정 카드는 헤더 없이 card-body만 */
+.measurement-card > .card-body { padding: 0; }
+
+/* ── 폼 공통 요소 ────────────────────────────────────────── */
+.form-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+.form-row:last-child { margin-bottom: 0; }
+
+.form-row label {
+  width: 80px;
+  flex-shrink: 0;
+  font-size: 13px;
+  color: #555;
+  font-weight: 600;
+}
+
+.form-row input[type="text"],
+.form-row input[type="date"],
+.form-row input[type="number"],
+.form-row select,
+.form-row textarea {
+  flex: 1;
+  padding: 7px 10px;
+  border: 1px solid #d0d4da;
+  border-radius: 6px;
+  font-size: 13px;
+  font-family: inherit;
+  background: #fff;
+  transition: border-color 0.15s, box-shadow 0.15s;
+}
+
+.form-row input:focus,
+.form-row select:focus,
+.form-row textarea:focus {
+  outline: none;
+  border-color: #1a3a5c;
+  box-shadow: 0 0 0 3px rgba(26,58,92,0.12);
+}
+
+.form-row textarea { height: 60px; resize: vertical; }
+
+.field-hint {
+  font-size: 11px;
+  color: #999;
+  white-space: nowrap;
+}
+
+.required { color: #e53e3e; }
+
+/* ── 측정 카드 헤더 (체크박스 + 타이틀) ──────────────────── */
+.measurement-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 14px 16px;
+  background: #f7f9fc;
+  border-bottom: 2px solid #e2e5ea;
+}
+
+.measurement-header input[type="checkbox"] {
+  width: 18px; height: 18px;
+  cursor: pointer;
+  accent-color: #1a3a5c;
+  flex-shrink: 0;
+}
+
+.measurement-header label {
+  font-size: 15px;
+  font-weight: 700;
+  cursor: pointer;
+  color: #1a3a5c;
+  flex: 1;
+}
+
+.base-price-badge {
+  font-size: 12px;
+  font-weight: 700;
+  color: #1a3a5c;
+  background: #dce8f5;
+  border: 1px solid #b8d0eb;
+  border-radius: 12px;
+  padding: 3px 10px;
+  white-space: nowrap;
+}
+
+/* ══════════════════════════════════════════════════════════
+   ▶ 기본 조건 안내 블록 (파란 계열 – 읽기 전용 정보)
+   ══════════════════════════════════════════════════════════ */
+.info-block {
+  background: #e8f0f9;
+  border-left: 4px solid #2563a8;
+  margin: 0;
+  padding: 12px 16px;
+  border-bottom: 1px solid #ccd9ec;
+}
+
+.info-block-title {
+  font-size: 12px;
+  font-weight: 700;
+  color: #1a3a5c;
+  margin-bottom: 10px;
+  letter-spacing: 0.3px;
+}
+
+.info-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.info-item {
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+}
+
+.info-label {
+  font-size: 11px;
+  color: #4a6fa5;
+  font-weight: 700;
+  white-space: nowrap;
+  min-width: 100px;
+  flex-shrink: 0;
+}
+
+.info-value {
+  font-size: 12px;
+  color: #1c3a64;
+  font-weight: 500;
+}
+
+/* ══════════════════════════════════════════════════════════
+   ▶ 입력 영역 블록 (흰 배경)
+   ══════════════════════════════════════════════════════════ */
+.input-block {
+  background: #fff;
+  padding: 14px 16px;
+}
+
+/* 서브 섹션 (입사각 / phi / theta / 광원) */
+.sub-section {
+  margin-bottom: 16px;
+  padding-bottom: 16px;
+  border-bottom: 1px dashed #e2e5ea;
+}
+.sub-section:last-child {
+  margin-bottom: 0;
+  padding-bottom: 0;
+  border-bottom: none;
+}
+
+/* 서브 섹션 헤더 */
+.sub-section-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 10px;
+}
+
+.sub-title {
+  font-size: 13px;
+  font-weight: 700;
+  color: #2c4a6e;
+  white-space: nowrap;
+}
+
+.sub-base-info {
+  font-size: 11px;
+  color: #666;
+  background: #f0f3f7;
+  border: 1px solid #d8dde5;
+  border-radius: 10px;
+  padding: 2px 9px;
+  white-space: nowrap;
+}
+
+/* 추가 행 */
+.extra-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 7px;
+}
+
+.extra-row-label {
+  font-size: 12px;
+  color: #888;
+  width: 64px;
+  flex-shrink: 0;
+}
+
+.extra-row input {
+  width: 100px;
+  padding: 5px 8px;
+  border: 1px solid #d0d4da;
+  border-radius: 5px;
+  font-size: 13px;
+}
+.extra-row input:focus {
+  outline: none;
+  border-color: #1a3a5c;
+  box-shadow: 0 0 0 2px rgba(26,58,92,0.1);
+}
+
+.unit-label {
+  font-size: 12px;
+  color: #666;
+}
+
+/* theta 간격 행 */
+.theta-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.theta-row label {
+  font-size: 12px;
+  color: #555;
+  font-weight: 600;
+}
+
+.theta-row input {
+  padding: 5px 8px;
+  border: 1px solid #d0d4da;
+  border-radius: 5px;
+  font-size: 13px;
+}
+.theta-row input:focus {
+  outline: none;
+  border-color: #1a3a5c;
+  box-shadow: 0 0 0 2px rgba(26,58,92,0.1);
+}
+
+.free-badge {
+  font-size: 11px;
+  color: #2a7a3e;
+  background: #e6f5ea;
+  border: 1px solid #b8dfc2;
+  border-radius: 10px;
+  padding: 2px 8px;
+  font-weight: 600;
+}
+
+/* 광원 라디오 */
+.radio-group {
+  display: flex;
+  gap: 20px;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.radio-label {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  cursor: pointer;
+  font-size: 13px;
+}
+
+.radio-label input[type="radio"] {
+  width: 16px; height: 16px;
+  accent-color: #1a3a5c;
+  cursor: pointer;
+}
+
+/* 레이저 옵션 */
+.laser-options {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: #fffbea;
+  border: 1px solid #f0d060;
+  border-radius: 6px;
+  padding: 8px 12px;
+  margin-top: 6px;
+}
+
+.laser-options label {
+  font-size: 12px;
+  color: #7a5c00;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.laser-options select {
+  padding: 5px 10px;
+  border: 1px solid #d0ba60;
+  border-radius: 5px;
+  font-size: 13px;
+  background: #fff;
+}
+
+/* ── 수량 입력 그룹 ──────────────────────────────────────── */
+.qty-group {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: #fff;
+  border: 1px solid #c8d4e3;
+  border-radius: 6px;
+  padding: 4px 10px;
+  margin-left: auto;
+}
+
+.qty-label {
+  font-size: 11px;
+  color: #4a6fa5;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.qty-input {
+  width: 54px;
+  padding: 3px 6px;
+  border: 1px solid #b0c0d8;
+  border-radius: 4px;
+  font-size: 14px;
+  font-weight: 700;
+  text-align: center;
+  color: #1a3a5c;
+}
+.qty-input:focus {
+  outline: none;
+  border-color: #1a3a5c;
+  box-shadow: 0 0 0 2px rgba(26,58,92,0.12);
+}
+
+.qty-unit {
+  font-size: 12px;
+  color: #555;
+  font-weight: 600;
+}
+
+/* ── 기본 입력값 그룹 (입사각·azimuth 기본 포함분) ──────── */
+.base-inputs-group {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  background: #f4f7fb;
+  border: 1px solid #d0d8e8;
+  border-radius: 6px;
+  padding: 10px 12px;
+  margin-bottom: 10px;
+}
+
+.base-input-row {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.base-row-label {
+  font-size: 11px;
+  color: #4a6fa5;
+  font-weight: 700;
+  white-space: nowrap;
+  background: #dce8f5;
+  border-radius: 4px;
+  padding: 2px 6px;
+}
+
+.base-inputs-group input[type="number"] {
+  width: 68px;
+  padding: 5px 6px;
+  border: 1px solid #b8cce4;
+  border-radius: 5px;
+  font-size: 13px;
+  text-align: center;
+  background: #fff;
+}
+.base-inputs-group input[type="number"]:focus {
+  outline: none;
+  border-color: #1a3a5c;
+  box-shadow: 0 0 0 2px rgba(26,58,92,0.12);
+}
+
+/* 기본 포함 배지 (초록 계열) */
+.sub-base-info.included {
+  background: #e6f5ea;
+  border-color: #a8d8b4;
+  color: #1e6b35;
+  font-weight: 700;
+}
+
+/* ── 버튼 공통 ───────────────────────────────────────────── */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 7px 14px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 13px;
+  font-family: inherit;
+  font-weight: 600;
+  transition: background 0.15s, transform 0.1s;
+}
+.btn:active { transform: scale(0.97); }
+.btn:disabled { opacity: 0.55; cursor: not-allowed; }
+
+.btn-add {
+  background: #f0f3f7;
+  color: #2c4a6e;
+  border: 1px dashed #aab5c5;
+  font-size: 12px;
+  padding: 5px 12px;
+}
+.btn-add:hover { background: #e2e8f0; }
+
+.add-price-hint {
+  font-size: 11px;
+  color: #e05a00;
+  font-weight: 700;
+  background: #fff3e8;
+  border-radius: 8px;
+  padding: 1px 6px;
+}
+
+.btn-remove {
+  background: #ffe8e8;
+  color: #c00;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  padding: 4px 9px;
+  font-size: 12px;
+  font-weight: 700;
+  line-height: 1;
+}
+.btn-remove:hover { background: #ffc5c5; }
+
+.btn-primary   { background: #1a3a5c; color: #fff; }
+.btn-primary:hover   { background: #14305a; }
+
+.btn-success   { background: #2a7a3e; color: #fff; }
+.btn-success:hover   { background: #206230; }
+
+.btn-secondary { background: #5a6778; color: #fff; }
+.btn-secondary:hover { background: #48555f; }
+
+/* ── 우측 금액 요약 ──────────────────────────────────────── */
+.summary-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+}
+.summary-table td { padding: 6px 2px; }
+.summary-divider td { border-top: 1px solid #e2e5ea; padding-top: 8px; margin-top: 4px; }
+.summary-subtotal td { color: #444; }
+.summary-discount td { color: #c00; }
+.summary-total { border-top: 2px solid #1a3a5c; }
+.summary-total td { padding-top: 8px; font-size: 15px; color: #1a3a5c; }
+
+/* 액션 버튼 세로 배열 */
+.action-buttons {
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+}
+.action-buttons .btn {
+  width: 100%;
+  justify-content: center;
+  padding: 10px;
+  font-size: 13px;
+}
+
+/* ── 미리보기 모달 ───────────────────────────────────────── */
+#previewModal {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.55);
+  z-index: 1000;
+  justify-content: center;
+  align-items: flex-start;
+  padding: 30px 20px;
+  overflow-y: auto;
+}
+
+.modal-inner {
+  background: #fff;
+  border-radius: 10px;
+  width: 100%;
+  max-width: 820px;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.25);
+}
+
+.modal-toolbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 20px;
+  border-bottom: 1px solid #e2e5ea;
+  background: #f7f9fc;
+  border-radius: 10px 10px 0 0;
+}
+
+.modal-toolbar h3 { font-size: 15px; color: #1a3a5c; font-weight: 700; }
+
+.modal-toolbar-btns { display: flex; gap: 8px; }
+
+.modal-body { padding: 24px; }
+
+/* ── 견적서 문서 스타일 ──────────────────────────────────── */
+.quote-document {
+  font-family: 'Malgun Gothic', '맑은 고딕', sans-serif;
+  font-size: 12px;
+  color: #1a1a1a;
+  max-width: 760px;
+  margin: 0 auto;
+  padding: 24px;
+  border: 1px solid #ccc;
+  background: #fff;
+}
+
+.quote-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  padding-bottom: 12px;
+  border-bottom: 3px solid #1a3a5c;
+  margin-bottom: 8px;
+}
+
+.company-name {
+  font-size: 26px;
+  font-weight: 900;
+  color: #1a3a5c;
+  letter-spacing: 1px;
+}
+
+.meta-table { border-collapse: collapse; font-size: 11px; }
+.meta-table th {
+  background: #e8ecf0; padding: 4px 10px;
+  text-align: left; border: 1px solid #bbb; white-space: nowrap;
+}
+.meta-table td {
+  padding: 4px 10px; border: 1px solid #bbb; min-width: 130px;
+}
+
+.quote-title {
+  text-align: center;
+  font-size: 26px; font-weight: 900;
+  color: #1a3a5c; letter-spacing: 6px;
+  margin: 10px 0 12px;
+}
+
+.to-table { width: 100%; border-collapse: collapse; margin-bottom: 8px; }
+.to-table th {
+  background: #1a3a5c; color: #fff;
+  padding: 6px 10px; width: 90px;
+  white-space: nowrap; border: 1px solid #1a3a5c;
+}
+.to-table td {
+  padding: 6px 10px; border: 1px solid #bbb; font-weight: 700;
+}
+
+.quote-intro {
+  font-size: 11px; color: #555;
+  margin: 6px 0 10px; line-height: 1.6;
+}
+
+.quote-table { width: 100%; border-collapse: collapse; margin: 10px 0; font-size: 12px; }
+.quote-table th {
+  background: #1a3a5c; color: #fff;
+  padding: 7px 8px; text-align: center; border: 1px solid #1a3a5c;
+}
+.quote-table td { border: 1px solid #ccc; padding: 7px 8px; vertical-align: top; }
+
+.col-desc  { width: 52%; }
+.col-qty   { width: 6%;  }
+.col-unit  { width: 6%;  }
+.col-price { width: 18%; }
+.col-total { width: 18%; }
+
+.row-extra td { background: #f9f9f9; font-size: 11px; color: #666; }
+.desc-detail  { font-size: 11px; color: #555; display: block; }
+.desc-indent  { padding-left: 20px !important; }
+
+.row-subtotal td { background: #f0f2f5; }
+.row-discount td { background: #fff5f5; }
+.row-total    td { background: #e6edf5; font-size: 13px; }
+.total-amount    { font-size: 14px !important; color: #1a3a5c; }
+.row-vat      td { background: #f5f0ff; color: #555; }
+.row-final    td { background: #1a3a5c; color: #fff; font-size: 13px; }
+.final-amount    { font-size: 14px !important; }
+.row-vat-note td { background: #f8f9fb; }
+.vat-note        { font-size: 11px; color: #888; font-style: italic; }
+
+.quote-footer { margin-top: 16px; }
+.footer-table { width: 100%; border-collapse: collapse; font-size: 11px; }
+.footer-table th {
+  background: #e8ecf0; padding: 5px 8px;
+  text-align: left; border: 1px solid #bbb; white-space: nowrap; width: 130px;
+}
+.footer-table td { padding: 5px 8px; border: 1px solid #bbb; }
+
+/* 유틸 */
+.text-right  { text-align: right !important; }
+.text-center { text-align: center !important; }
+.text-red    { color: #c00 !important; }
+.text-muted  { color: #999; }
+
+/* ── 인쇄 ────────────────────────────────────────────────── */
+@media print {
+  body { background: #fff; }
+  .app-container { display: block; padding: 0; }
+  .form-panel, .summary-panel { display: none; }
+  #previewModal {
+    display: block !important; position: static;
+    background: none; padding: 0;
+  }
+  .modal-toolbar { display: none; }
+  .modal-inner   { box-shadow: none; border-radius: 0; }
+  .modal-body    { padding: 0; }
+  .quote-document { border: none; max-width: 100%; padding: 0; }
+}
