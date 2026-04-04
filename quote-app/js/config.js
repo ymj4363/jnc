@@ -8,7 +8,7 @@ const CONFIG = {
   company: {
     name: 'J & C TECH',
     fullName: 'J&C Technology Co.,Ltd.',
-    bank: '국민은행 179-026653-04-019',
+    bank: '기업은행 179-026653-04-019',
     validity: '30days',
     paymentTerms: '50% Cash in Advance, 50% Cash upon Delivery.',
   },
