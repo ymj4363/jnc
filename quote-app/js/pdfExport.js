@@ -20,7 +20,7 @@ const PdfExport = (() => {
       // 화면 밖에 임시 컨테이너를 만들어 렌더링
       tempWrapper = document.createElement('div');
       tempWrapper.style.cssText =
-        'position:fixed; left:-9999px; top:0; width:794px; background:#fff; z-index:-1;';
+        'position:absolute; left:-9999px; top:0; width:860px; padding:10px; background:#fff;';
       tempWrapper.innerHTML = html;
       document.body.appendChild(tempWrapper);
       element = tempWrapper;
