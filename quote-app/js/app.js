@@ -32,9 +32,9 @@ const App = (() => {
       if (errors.length > 0) { alert(errors.join('\n')); return; }
       const formData = Form.collect();
       const result = Calculator.calculate(formData);
-      const previewContent = document.getElementById('previewContent');
-      if (previewContent) previewContent.innerHTML = Preview.render(formData, result);
-      PdfExport.download(formData.customerName, formData.quoteDate, formData.quoteNo);
+      const html = Preview.render(formData, result);
+      // 모달이 닫혀 있을 수 있으므로 HTML을 직접 전달해 off-screen 렌더링
+      PdfExport.download(formData.customerName, formData.quoteDate, formData.quoteNo, html);
     });
 
     // 인쇄 버튼

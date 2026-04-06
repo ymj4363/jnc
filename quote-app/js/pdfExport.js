@@ -9,9 +9,25 @@ const PdfExport = (() => {
    * 현재 미리보기 영역을 PDF로 저장
    * @param {string} customerName - 파일명에 사용할 고객사명
    * @param {string} dateStr      - 날짜 문자열 (YYYY-MM-DD)
+   * @param {string} quoteNo      - 견적 번호
+   * @param {string} [html]       - 직접 전달할 HTML (없으면 #quoteDocument 사용)
    */
-  function download(customerName, dateStr, quoteNo) {
-    const element = document.getElementById('quoteDocument');
+  function download(customerName, dateStr, quoteNo, html) {
+    let element;
+    let tempWrapper = null;
+
+    if (html) {
+      // 화면 밖에 임시 컨테이너를 만들어 렌더링
+      tempWrapper = document.createElement('div');
+      tempWrapper.style.cssText =
+        'position:fixed; left:-9999px; top:0; width:794px; background:#fff; z-index:-1;';
+      tempWrapper.innerHTML = html;
+      document.body.appendChild(tempWrapper);
+      element = tempWrapper;
+    } else {
+      element = document.getElementById('quoteDocument');
+    }
+
     if (!element) {
       alert('미리보기를 먼저 생성해주세요.');
       return;
@@ -50,12 +66,14 @@ const PdfExport = (() => {
       .from(element)
       .save()
       .then(() => {
+        if (tempWrapper) document.body.removeChild(tempWrapper);
         if (btn) {
           btn.disabled = false;
           btn.textContent = 'PDF 저장';
         }
       })
       .catch(err => {
+        if (tempWrapper) document.body.removeChild(tempWrapper);
         console.error('PDF 생성 오류:', err);
         alert('PDF 생성 중 오류가 발생했습니다.');
         if (btn) {
