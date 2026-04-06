@@ -355,6 +355,33 @@
         </div>
       </div>
 
+      <!-- ── 광학계 구성 ──────────────────────────────── -->
+      <div class="card measurement-card">
+        <div class="card-body">
+
+          <div class="measurement-header">
+            <input type="checkbox" id="optics-enabled" name="optics-enabled">
+            <label for="optics-enabled">광학계 구성 (Optical System Setup)</label>
+          </div>
+
+          <div id="optics-section" style="display:none;">
+            <div class="input-block">
+              <div class="sub-section">
+                <div class="sub-section-header">
+                  <span class="sub-title">구성 항목 입력</span>
+                  <span class="sub-base-info">항목명 · 수량 · 단가를 입력하세요</span>
+                </div>
+                <div id="optics-items-container"></div>
+                <button type="button" class="btn btn-add" id="optics-add-item">
+                  + 항목 추가
+                </button>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
       <!-- ── 할인 / 부가세 / 비고 ───────────────────── -->
       <div class="card">
         <div class="card-header">💰 할인 / 부가세 / 비고</div>

@@ -54,6 +54,12 @@ const CONFIG = {
       },
     },
 
+    // 광학계 구성
+    optics: {
+      label: '광학계 구성',
+      defaultItems: [],   // 기본 항목 없음 (사용자 직접 입력)
+    },
+
     // 할인
     discount: {
       rate: 0,

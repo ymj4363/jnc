@@ -22,6 +22,18 @@ const Calculator = (() => {
       items.push(item);
     }
 
+    // 광학계 구성 항목
+    if (formData.optics && formData.optics.enabled && formData.optics.items.length > 0) {
+      const opticsTotal = formData.optics.items.reduce((sum, it) => sum + it.qty * it.unitPrice, 0);
+      subtotal += opticsTotal;
+      items.push({
+        type: 'OPTICS',
+        label: CONFIG.pricing.optics.label,
+        items: formData.optics.items,
+        total: opticsTotal,
+      });
+    }
+
     const discountRate   = formData.discountRate  || 0;
     const discountLabel  = formData.discountLabel || '';
     const discountAmount = Math.round(subtotal * discountRate);

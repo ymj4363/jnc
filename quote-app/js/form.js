@@ -48,6 +48,10 @@ const Form = (() => {
     bindMeasurementToggle('btdf');
     bindMeasurementToggle('brdf');
 
+    // 광학계 구성 토글 및 항목 추가
+    bindOpticsToggle();
+    document.getElementById('optics-add-item')?.addEventListener('click', addOpticsRow);
+
     // 입사각 추가 버튼
     document.getElementById('btdf-add-angle')?.addEventListener('click', () => addAngleRow('btdf'));
     document.getElementById('brdf-add-angle')?.addEventListener('click', () => addAngleRow('brdf'));
@@ -122,9 +126,55 @@ const Form = (() => {
     App.updatePreview();
   }
 
+  /** 광학계 구성 토글 */
+  function bindOpticsToggle() {
+    const checkbox = document.getElementById('optics-enabled');
+    const section  = document.getElementById('optics-section');
+    if (!checkbox || !section) return;
+    checkbox.addEventListener('change', () => {
+      section.style.display = checkbox.checked ? 'block' : 'none';
+      App.updatePreview();
+    });
+    section.style.display = checkbox.checked ? 'block' : 'none';
+  }
+
+  /** 광학계 항목 행 추가 */
+  function addOpticsRow() {
+    const container = document.getElementById('optics-items-container');
+    const row = document.createElement('div');
+    row.className = 'optics-row';
+    row.innerHTML = `
+      <input type="text"   class="optics-name"  placeholder="항목명">
+      <input type="number" class="optics-qty"   value="1" min="1" step="1" style="width:60px; text-align:center;">
+      <span class="unit-label">개</span>
+      <input type="number" class="optics-price" placeholder="단가 (원)" min="0" step="10000" style="width:130px; text-align:right;">
+      <span class="unit-label">원</span>
+      <span class="optics-subtotal-label"></span>
+      <button type="button" class="btn-remove" onclick="Form.removeRow(this)">✕</button>
+    `;
+    container.appendChild(row);
+    row.querySelectorAll('input').forEach(el => el.addEventListener('input', () => {
+      updateOpticsSubtotal(row);
+      App.updatePreview();
+    }));
+    App.updatePreview();
+  }
+
+  /** 광학계 행 소계 표시 업데이트 */
+  function updateOpticsSubtotal(row) {
+    const qty   = parseInt(row.querySelector('.optics-qty')?.value  || '0', 10)  || 0;
+    const price = parseFloat(row.querySelector('.optics-price')?.value || '0') || 0;
+    const label = row.querySelector('.optics-subtotal-label');
+    if (label) {
+      label.textContent = qty && price
+        ? `= ${(qty * price).toLocaleString('ko-KR')}원`
+        : '';
+    }
+  }
+
   /** 행 삭제 */
   function removeRow(btn) {
-    btn.closest('.extra-row').remove();
+    btn.closest('.extra-row, .optics-row').remove();
     App.updatePreview();
   }
 
@@ -149,6 +199,7 @@ const Form = (() => {
       vatOption:       document.querySelector('input[name="vatOption"]:checked')?.value || 'exclusive',
       btdf:            collectMeasurement('btdf'),
       brdf:            collectMeasurement('brdf'),
+      optics:          collectOptics(),
     };
   }
 
@@ -206,6 +257,22 @@ const Form = (() => {
     };
   }
 
+  /** 광학계 구성 데이터 수집 */
+  function collectOptics() {
+    const enabled = document.getElementById('optics-enabled')?.checked || false;
+    if (!enabled) return { enabled: false, items: [] };
+
+    const rows = document.querySelectorAll('#optics-items-container .optics-row');
+    const items = Array.from(rows).map(row => {
+      const name      = row.querySelector('.optics-name')?.value.trim() || '';
+      const qty       = Math.max(1, parseInt(row.querySelector('.optics-qty')?.value  || '1', 10));
+      const unitPrice = Math.max(0, parseFloat(row.querySelector('.optics-price')?.value || '0') || 0);
+      return { name, qty, unitPrice };
+    }).filter(it => it.name || it.unitPrice > 0);
+
+    return { enabled, items };
+  }
+
   /** 견적번호 조합: 접두사 + 일련번호 3자리 */
   function buildQuoteNo() {
     const prefix = document.getElementById('quoteNoPrefix')?.value || '';
@@ -224,5 +291,5 @@ const Form = (() => {
     return errors;
   }
 
-  return { init, collect, validate, removeRow, handleWavelengthChange };
+  return { init, collect, validate, removeRow, handleWavelengthChange, addOpticsRow };
 })();

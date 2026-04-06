@@ -259,6 +259,44 @@ body {
   color: #666;
 }
 
+/* 광학계 구성 행 */
+.optics-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 8px;
+  flex-wrap: wrap;
+}
+
+.optics-row input[type="text"] {
+  flex: 1;
+  min-width: 140px;
+  padding: 5px 8px;
+  border: 1px solid #d0d4da;
+  border-radius: 5px;
+  font-size: 13px;
+}
+
+.optics-row input[type="number"] {
+  padding: 5px 8px;
+  border: 1px solid #d0d4da;
+  border-radius: 5px;
+  font-size: 13px;
+}
+
+.optics-row input:focus {
+  outline: none;
+  border-color: #1a3a5c;
+  box-shadow: 0 0 0 2px rgba(26,58,92,0.1);
+}
+
+.optics-subtotal-label {
+  font-size: 12px;
+  color: #1a3a5c;
+  font-weight: 600;
+  min-width: 110px;
+}
+
 /* theta 간격 행 */
 .theta-row {
   display: flex;

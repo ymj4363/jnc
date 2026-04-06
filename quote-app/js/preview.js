@@ -100,8 +100,31 @@ const Preview = (() => {
 </div>`;
   }
 
-  /** 항목 1건 */
+  /** 광학계 구성 항목 렌더링 */
+  function renderOpticsItem(item) {
+    const rows = item.items.map(it => `
+    <tr class="row-extra">
+      <td class="desc-indent">- ${esc(it.name || '(항목명 없음)')}</td>
+      <td class="text-center">${it.qty}</td>
+      <td class="text-center">개</td>
+      <td class="text-right">${krw(it.unitPrice)}</td>
+      <td class="text-right">${krw(it.qty * it.unitPrice)}</td>
+    </tr>`).join('');
+
+    return `
+    <tr>
+      <td><strong>${esc(item.label)}</strong></td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td class="text-right">${krw(item.total)}</td>
+    </tr>
+    ${rows}`;
+  }
+
+  /** 측정 항목 1건 */
   function renderItem(item) {
+    if (item.type === 'OPTICS') return renderOpticsItem(item);
     const angleList   = item.incidentAngles.map(a => a + '°').join(', ');
     const azimuthList = item.azimuthValues.map(a => a + '°').join(', ');
     const thetaDesc   = `-80° ~ 80°, ${item.thetaStep}° 간격`;
