@@ -21,7 +21,7 @@ const PdfExport = (() => {
       margin:       [10, 10, 10, 10],
       filename:     filename,
       image:        { type: 'jpeg', quality: 0.98 },
-      html2canvas:  { scale: 2, useCORS: true, logging: false },
+      html2canvas:  { scale: 2, useCORS: true, logging: false, windowWidth: 794 },
       jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' },
       pagebreak:    { mode: ['avoid-all', 'css', 'legacy'] },
     };
@@ -35,8 +35,9 @@ const PdfExport = (() => {
     };
 
     if (html) {
-      // HTML 문자열을 html2pdf에 직접 전달 — 라이브러리가 내부적으로 임시 DOM 처리
-      html2pdf().set(opt).from(html).save().then(restore).catch(err => {
+      // A4 너비(794px)로 고정된 컨테이너로 감싸서 우측 잘림 방지
+      const wrapped = `<div style="width:774px;padding:0;margin:0;background:#fff;">${html}</div>`;
+      html2pdf().set(opt).from(wrapped).save().then(restore).catch(err => {
         console.error('PDF 생성 오류:', err);
         alert('PDF 생성 중 오류가 발생했습니다.');
         restore();
