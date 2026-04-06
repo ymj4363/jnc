@@ -453,7 +453,7 @@
       <h3>견적서 미리보기</h3>
       <div class="modal-toolbar-btns">
         <button class="btn btn-success" id="btnPdfModal" type="button"
-                onclick="(() => { const fd = Form.collect(); PdfExport.download(fd.customerName, fd.quoteDate, fd.quoteNo); })()">
+                onclick="(() => { const fd = Form.collect(); const html = Preview.render(fd, Calculator.calculate(fd)); PdfExport.download(fd.customerName, fd.quoteDate, fd.quoteNo, html); })()">
           📄 PDF 저장
         </button>
         <button class="btn btn-secondary" id="btnCloseModal" type="button">✕ 닫기</button>
@@ -467,7 +467,8 @@
 <script src="js/config.js"></script>
 <script src="js/calculator.js"></script>
 <script src="js/preview.js"></script>
-<script src="assets/html2pdf.bundle.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
 <script src="js/pdfExport.js"></script>
 <script src="js/form.js"></script>
 <script src="js/app.js"></script>
