@@ -1,0 +1,6 @@
+# quote-app 은 별도 저장소(github.com/ymj4363/quote-app)에서 관리한다.
+# Cloudflare Pages 가 그 저장소를 보고 배포하므로 여기서는 추적하지 않는다.
+quote-app/
+
+# rt300s-landing 도 이 저장소에서 관리하지 않는다
+rt300s-landing/
